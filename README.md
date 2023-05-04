@@ -1,0 +1,1 @@
+Este repositorio consiste nos trabalhos praticos da disciplia de Computacao de alto desempenho (CAD)
