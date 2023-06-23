@@ -46,13 +46,19 @@ y2_f = np.array([float(row[2]) for row in data_f])
 x_mean_f, y1_mean_f = compute_mean(x_f, y1_f)
 _, y2_mean_f = compute_mean(x_f, y2_f)
 
+print(x_mean_c)
+print(y1_mean_c) 
+print(y1_mean_f)
+print(y2_mean_c) 
+print(y2_mean_f)
+
 # Plot the graph
 plt.figure()
 plot_graph(x_mean_c, y1_mean_c, y2_mean_c, 'C')
 plot_graph(x_mean_f, y1_mean_f, y2_mean_f, 'Fortran')
 
-plt.xlabel('X-axis')
-plt.ylabel('Y-axis')
-plt.title('Graph with Mean Values for Each Unique x_c')
+plt.xlabel('Tamanho da Matriz (Quantidade de Linhas e Colunas))')
+plt.ylabel('Tempo (Segundos)')
+plt.title('Grafico dos tempos de execucao em funcao do tamanho da matriz')
 plt.legend()
 plt.show()
