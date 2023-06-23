@@ -1,3 +1,5 @@
 .vscode/settings.json
 .vscode/tasks.json
 a.exe
+a.out
+gmon.out

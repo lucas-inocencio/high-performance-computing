@@ -1,4 +1,3 @@
-//
 // Implementation of the iterative Jacobi method.
 //
 // Given a known, diagonally dominant matrix A and a known vector b, we aim to
@@ -53,13 +52,14 @@ int run(double *A, double *b, double *x, double *xtmp)
     do
     {
         // Perfom Jacobi iteration
+
         for (row = 0; row < N; row++)
         {
             dot = 0.0;
             for (col = 0; col < N; col++)
             {
                 if (row != col)
-                    dot += A[row + col * N] * x[col];
+                    dot += A[col + row * N] * x[col];
             }
             xtmp[row] = (b[row] - dot) / A[row + row * N];
         }
@@ -85,71 +85,74 @@ int run(double *A, double *b, double *x, double *xtmp)
 
 int main(int argc, char *argv[])
 {
-    parse_arguments(argc, argv);
-
-    double *A = malloc(N * N * sizeof(double));
-    double *b = malloc(N * sizeof(double));
-    double *x = malloc(N * sizeof(double));
-    double *xtmp = malloc(N * sizeof(double));
-
-    printf(SEPARATOR);
-    printf("Matrix size:            %dx%d\n", N, N);
-    printf("Maximum iterations:     %d\n", MAX_ITERATIONS);
-    printf("Convergence threshold:  %lf\n", CONVERGENCE_THRESHOLD);
-    printf(SEPARATOR);
-
-    double total_start = get_timestamp();
-
-    // Initialize data
-    srand(SEED);
-    for (int row = 0; row < N; row++)
+    for (int a = 0; a < 5; a++)
     {
-        double rowsum = 0.0;
-        for (int col = 0; col < N; col++)
+        parse_arguments(argc, argv);
+
+        double *A = malloc(N * N * sizeof(double));
+        double *b = malloc(N * sizeof(double));
+        double *x = malloc(N * sizeof(double));
+        double *xtmp = malloc(N * sizeof(double));
+
+        printf(SEPARATOR);
+        printf("Matrix size:            %dx%d\n", N, N);
+        printf("Maximum iterations:     %d\n", MAX_ITERATIONS);
+        printf("Convergence threshold:  %lf\n", CONVERGENCE_THRESHOLD);
+        printf(SEPARATOR);
+
+        double total_start = get_timestamp();
+
+        // Initialize data outer loop (loop over rows)
+        srand(SEED);
+        for (int row = 0; row < N; row++)
         {
-            double value = rand() / (double)RAND_MAX;
-            A[row + col * N] = value;
-            rowsum += value;
+            double rowsum = 0.0;
+            for (int col = 0; col < N; col++)
+            {
+                double value = rand() / (double)RAND_MAX;
+                A[col + row * N] = value;
+                rowsum += value;
+            }
+            A[row + row * N] += rowsum;
+            b[row] = rand() / (double)RAND_MAX;
+            x[row] = 0.0;
         }
-        A[row + row * N] += rowsum;
-        b[row] = rand() / (double)RAND_MAX;
-        x[row] = 0.0;
-    }
 
-    // Run Jacobi solver
-    double solve_start = get_timestamp();
-    int itr = run(A, b, x, xtmp);
-    double solve_end = get_timestamp();
+        // Run Jacobi solver
+        double solve_start = get_timestamp();
+        int itr = run(A, b, x, xtmp);
+        double solve_end = get_timestamp();
 
-    // Check error of final solution
-    double err = 0.0;
-    for (int row = 0; row < N; row++)
-    {
-        double tmp = 0.0;
-        for (int col = 0; col < N; col++)
+        // Check error of final solution
+
+        double err = 0.0;
+        for (int row = 0; row < N; row++)
         {
-            tmp += A[row + col * N] * x[col];
+            double tmp = 0.0;
+            for (int col = 0; col < N; col++)
+            {
+                tmp += A[col + row * N] * x[col];
+            }
+            tmp = b[row] - tmp;
+            err += tmp * tmp;
         }
-        tmp = b[row] - tmp;
-        err += tmp * tmp;
+        err = sqrt(err);
+
+        double total_end = get_timestamp();
+
+        printf("Solution error = %lf\n", err);
+        printf("Iterations     = %d\n", itr);
+        printf("Total runtime  = %lf seconds\n", (total_end - total_start));
+        printf("Solver runtime = %lf seconds\n", (solve_end - solve_start));
+        if (itr == MAX_ITERATIONS)
+            printf("WARNING: solution did not converge\n");
+        printf(SEPARATOR);
+
+        free(A);
+        free(b);
+        free(x);
+        free(xtmp);
     }
-    err = sqrt(err);
-
-    double total_end = get_timestamp();
-
-    printf("Solution error = %lf\n", err);
-    printf("Iterations     = %d\n", itr);
-    printf("Total runtime  = %lf seconds\n", (total_end - total_start));
-    printf("Solver runtime = %lf seconds\n", (solve_end - solve_start));
-    if (itr == MAX_ITERATIONS)
-        printf("WARNING: solution did not converge\n");
-    printf(SEPARATOR);
-
-    free(A);
-    free(b);
-    free(x);
-    free(xtmp);
-
     return 0;
 }
 
@@ -177,7 +180,7 @@ double parse_double(const char *str)
 void parse_arguments(int argc, char *argv[])
 {
     // Set default values
-    N = 1000;
+    N = 2000;
     MAX_ITERATIONS = 20000;
     CONVERGENCE_THRESHOLD = 0.0001;
     SEED = 0;

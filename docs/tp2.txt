@@ -1,0 +1,14 @@
+Usando o programa no link: 
+
+https://github.com/UoB-HPC/intro-hpc-jacobi/blob/master/jacobi.c
+
+
+para a solução de um sistema de equações lineares pelo método iterativo de Jacobi, faça:
+
++ compile e execute o programa para pelo menos 3 tamanhos de matrizes (objetivo - obter tempos significativos, pelo menos da ordem de minutos, para ficar mais fácil ver os efeitos das otimizações) e escolha 1 tamanho para prosseguir
++ recompile e execute o programa com otimização automática 
++ execute a perfilagem do programa usando o gprof ou o Intel VTune
++ analise o resultado da perfilagem
++ de posse dos resultados de sua análise, tente 1 ação de otimização 
++ compare os tempos das versões (inicial, com otimização automática, e após perfilagem)
++ faca um relatório descrevendo a sua experiência
