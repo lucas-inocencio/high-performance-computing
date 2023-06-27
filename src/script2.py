@@ -17,6 +17,10 @@ with open('results_jacobi.csv', 'r') as file:
     for label in labels:
         times.append(np.array([float(row[1]) for row in data if row[0] == label]))
     
+    # print mean and var
+    for i in range(len(labels)):
+        print(labels[i], "mean:", np.mean(times[i]), "var:", np.var(times[i]))
+
     # Boxplot times small sample
     plt.boxplot(times, labels=labels)
     plt.ylabel('Tempo (Segundos)')
